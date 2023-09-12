@@ -4,6 +4,9 @@
     <title>Hexo • Posts by &#34;cg&#34; tag</title>
     <link href="https://elainax.github.io" />
     <updated>2023-09-12T13:21:53.000Z</updated>
+    <category term="Python" />
+    <category term="Django" />
+    <category term="Network" />
     <category term="CG" />
     <category term="游戏引擎" />
     <category term="Unity" />
@@ -51,10 +54,10 @@
 &lt;p&gt;在资源监视器（Inspector）中可以修改材质的属性&lt;/p&gt;
 &lt;h5 id=&#34;pivot-center&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#pivot-center&#34;&gt;#&lt;/a&gt; Pivot &amp;amp; Center&lt;/h5&gt;
 &lt;p&gt;当我们想旋转创建好的时针的时候，我们发现他默认按物体中心（Center）旋转，结果如图&lt;/p&gt;
-&lt;p&gt;​	&lt;img data-src=&#34;D:%5CMyNOTE%5C%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E%5CUnity%5CUnity.assets%5Cimage-20230912001433124.png&#34; alt=&#34;image-20230912001433124&#34;&gt;&lt;/p&gt;
+&lt;p&gt;​	&lt;img data-src=&#34;https://img1.imgtp.com/2023/09/12/mfln5mx6.png&#34; alt=&#34;image-20230912001433124&#34;&gt;&lt;/p&gt;
 &lt;p&gt;然而我们只希望他绕着钟表中心旋转，因此需要进行锚点（Pivot）的选定。&lt;/p&gt;
 &lt;p&gt;Pivot：普遍解决方法是利用父子集关系，将我们的时针物体当作孩子链接给 Hours Arm Pivot 元素，类似下图：&lt;/p&gt;
-&lt;p&gt;&lt;img data-src=&#34;D:%5CMyNOTE%5C%E6%B8%B8%E6%88%8F%E5%BC%95%E6%93%8E%5CUnity%5CUnity.assets%5Cimage-20230912001629145.png&#34; alt=&#34;image-20230912001629145&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img data-src=&#34;https://img1.imgtp.com/2023/09/12/hQBiBLQ3.png&#34; alt=&#34;image-20230912001629145&#34;&gt;&lt;/p&gt;
 &lt;p&gt;然后我们就可以旋转 Hours Arm Pivot 来使得 Hours Arm 绕着 Hours Arm Pivot 的中心旋转了，操作方式有两种：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;选中 Hours Arm Pivot 并操作他的旋转属性&lt;/li&gt;

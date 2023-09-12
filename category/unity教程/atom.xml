@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://elainax.github.io</id>
+    <title>Hexo • Posts by &#34;unity教程&#34; category</title>
+    <link href="https://elainax.github.io" />
+    <updated>2023-09-12T13:21:53.000Z</updated>
+    <category term="Python" />
+    <category term="Django" />
+    <category term="Network" />
+    <category term="CG" />
+    <category term="游戏引擎" />
+    <category term="Unity" />
+    <entry>
+        <id>https://elainax.github.io/posts/289fe5f9.html</id>
+        <title>Catlike-Unity</title>
+        <link rel="alternate" href="https://elainax.github.io/posts/289fe5f9.html"/>
+        <content type="html">&lt;h1 id=&#34;catlike-coding-unity&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#catlike-coding-unity&#34;&gt;#&lt;/a&gt; Catlike Coding Unity&lt;/h1&gt;
+&lt;h2 id=&#34;11-basics&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#11-basics&#34;&gt;#&lt;/a&gt; 1.1 Basics&lt;/h2&gt;
+&lt;hr&gt;
+&lt;h3 id=&#34;1-制作闹钟-game-objects-and-scripts&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#1-制作闹钟-game-objects-and-scripts&#34;&gt;#&lt;/a&gt; 1. 制作闹钟 (Game Objects and Scripts)&lt;/h3&gt;
+&lt;h4 id=&#34;项目初始化&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#项目初始化&#34;&gt;#&lt;/a&gt; 项目初始化&lt;/h4&gt;
+&lt;h5 id=&#34;packages&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#packages&#34;&gt;#&lt;/a&gt; Packages&lt;/h5&gt;
+&lt;p&gt;只需要三个包&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Visual Studio Editor&lt;/li&gt;
+&lt;li&gt;Test Framework（Visual Studio 的依赖包）&lt;/li&gt;
+&lt;li&gt;Custom NUnit（已经集成在 Unity 中）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;color-space&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#color-space&#34;&gt;#&lt;/a&gt; Color Space&lt;/h5&gt;
+&lt;p&gt;颜色空间分为两种&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Linear — 线性颜色空间，是执行颜色间计算的主空间&lt;/li&gt;
+&lt;li&gt;Gamma — Gamma 颜色空间，是最终人看到颜色的视觉空间，计算前需要转换成&lt;mark&gt;线性颜色空间&lt;/mark&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;游戏实体创建&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#游戏实体创建&#34;&gt;#&lt;/a&gt; 游戏实体创建&lt;/h4&gt;
+&lt;h5 id=&#34;game-object&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#game-object&#34;&gt;#&lt;/a&gt; Game Object&lt;/h5&gt;
+&lt;p&gt;游戏物体默认创建时具有以下几个属性&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Transform — 控制物体的变换位置&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Mesh Filter — 控制当前 Mesh 的基础形状&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Mesh Renderer — 控制物体和相应材质的渲染&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Collider — 物理碰撞器（我们暂时不需要，可以删除）&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5 id=&#34;material&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#material&#34;&gt;#&lt;/a&gt; Material&lt;/h5&gt;
+&lt;p&gt;在 Asset 界面创建默认材质 &lt;em&gt;Assets/Create/Material&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;在资源监视器（Inspector）中可以修改材质的属性&lt;/p&gt;
+&lt;h5 id=&#34;pivot-center&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#pivot-center&#34;&gt;#&lt;/a&gt; Pivot &amp;amp; Center&lt;/h5&gt;
+&lt;p&gt;当我们想旋转创建好的时针的时候，我们发现他默认按物体中心（Center）旋转，结果如图&lt;/p&gt;
+&lt;p&gt;​	&lt;img data-src=&#34;https://img1.imgtp.com/2023/09/12/mfln5mx6.png&#34; alt=&#34;image-20230912001433124&#34;&gt;&lt;/p&gt;
+&lt;p&gt;然而我们只希望他绕着钟表中心旋转，因此需要进行锚点（Pivot）的选定。&lt;/p&gt;
+&lt;p&gt;Pivot：普遍解决方法是利用父子集关系，将我们的时针物体当作孩子链接给 Hours Arm Pivot 元素，类似下图：&lt;/p&gt;
+&lt;p&gt;&lt;img data-src=&#34;https://img1.imgtp.com/2023/09/12/hQBiBLQ3.png&#34; alt=&#34;image-20230912001629145&#34;&gt;&lt;/p&gt;
+&lt;p&gt;然后我们就可以旋转 Hours Arm Pivot 来使得 Hours Arm 绕着 Hours Arm Pivot 的中心旋转了，操作方式有两种：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;选中 Hours Arm Pivot 并操作他的旋转属性&lt;/li&gt;
+&lt;li&gt;选中 Hours Arm 并更改 Position Mode 为 Pivot&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h4 id=&#34;脚本编码&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#脚本编码&#34;&gt;#&lt;/a&gt; 脚本编码&lt;/h4&gt;
+&lt;h5 id=&#34;c-script-asset&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#c-script-asset&#34;&gt;#&lt;/a&gt; C# Script Asset&lt;/h5&gt;
+&lt;p&gt;每一个创建用来控制游戏物体（Game Object）的类都需要继承&lt;em&gt; MonoBehaviour&lt;/em&gt; 父类&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-C#&#34;&gt;using UnityEngine;
+public class Clock : MonoBehaviour &amp;#123;&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+        <category term="CG" />
+        <category term="游戏引擎" />
+        <category term="Unity" />
+        <updated>2023-09-12T13:21:53.000Z</updated>
+    </entry>
+</feed>
