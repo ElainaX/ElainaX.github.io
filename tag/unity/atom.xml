@@ -4,12 +4,12 @@
     <title>Hexo • Posts by &#34;unity&#34; tag</title>
     <link href="https://elainax.github.io" />
     <updated>2023-09-12T13:21:53.000Z</updated>
-    <category term="CG" />
-    <category term="游戏引擎" />
-    <category term="Unity" />
     <category term="Python" />
     <category term="Django" />
     <category term="Network" />
+    <category term="CG" />
+    <category term="游戏引擎" />
+    <category term="Unity" />
     <entry>
         <id>https://elainax.github.io/posts/289fe5f9.html</id>
         <title>Catlike-Unity</title>
@@ -65,10 +65,150 @@
 &lt;/ol&gt;
 &lt;h4 id=&#34;脚本编码&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#脚本编码&#34;&gt;#&lt;/a&gt; 脚本编码&lt;/h4&gt;
 &lt;h5 id=&#34;c-script-asset&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#c-script-asset&#34;&gt;#&lt;/a&gt; C# Script Asset&lt;/h5&gt;
-&lt;p&gt;每一个创建用来控制游戏物体（Game Object）的类都需要继承&lt;em&gt; MonoBehaviour&lt;/em&gt; 父类&lt;/p&gt;
+&lt;p&gt;每一个创建用来控制游戏物体（Game Object）的类都需要继承&lt;a href=&#34;https://docs.unity3d.com/ScriptReference/MonoBehaviour.html&#34;&gt;&lt;em&gt; MonoBehaviour&lt;/em&gt;&lt;/a&gt; 父类（在 UnityEngine 命名空间中）&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-C#&#34;&gt;using UnityEngine;
 public class Clock : MonoBehaviour &amp;#123;&amp;#125;
 &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;为了让这个类控制 Clock 的 Transform 变量行为，我们需要声明一个 Transform 成员来引用绑定 Clock 的 Transform 变量&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-c#&#34;&gt;[SerializeField]
+Transform hoursPivot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;上述代码的 “[SerializeField]” 标识符表示这个这个变量可以被序列化，unity 中序列化会使得 inspector 可以获取到这个变量的信息并显示出来，&lt;strong&gt;注意&lt;/strong&gt;：Unity 中共有字段（public）可以直接被 inspector 获取和显示，所以 “[SerializeField]” 主要修饰非公有字段&lt;/p&gt;
+&lt;h5 id=&#34;unity中的类函数&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#unity中的类函数&#34;&gt;#&lt;/a&gt; Unity 中的类函数&lt;/h5&gt;
+&lt;p&gt;MonoBehaviour：&lt;/p&gt;
+&lt;p&gt;这个父类可以让我们实现（implement）以下接口&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Awake () — 指示游戏启动的时候游戏对象的行为&lt;/li&gt;
+&lt;li&gt;Update () — 指示每帧（Frame）游戏对象如何更新资源和变量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;还有很多其他的可以实现的接口，但是我们本章不需要了解&lt;/p&gt;
+&lt;p&gt;Debug：&lt;/p&gt;
+&lt;p&gt;我们想要在控制台打印一些游戏的状态信息，这时候就需要引入 System 命名空间，这个命名空间中包含 Debug 类，Debug 类中有 Log 函数可以打印我们需要的东西&lt;/p&gt;
+&lt;p&gt;时间：&lt;/p&gt;
+&lt;p&gt;我们想要获取当前时间，System 中的 DateTime.Now 属性会返回一个 DateTime 类型，里面包含了当前的日期和时间&lt;/p&gt;
+&lt;p&gt;旋转角：&lt;/p&gt;
+&lt;p&gt;我们可以使用 Quaternion（四元数）里的 Euler 函数来定义欧拉角旋转，这会返回我们一个指向那个角度的方向向量（欧拉角也就是绕着三个轴分别旋转的度数，和我们的 Transform 匹配）&lt;/p&gt;
+&lt;p&gt;运用以上的类函数，我们就可以打印当前时间的同时使用欧拉角控制我们物体的旋转&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-C#&#34;&gt;using System;
+using UnityEngine;
+
+public class Clock : MonoBehaviour &amp;#123;
+
+	[SerializeField]
+	Transform hoursPivot, minutesPivot, secondsPivot;
+
+	void Awake () &amp;#123;
+		Debug.Log(DateTime.Now);
+		hoursPivot.localRotation = Quaternion.Euler(0, 0, -30);
+	&amp;#125;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;以上代码值得注意的点就是 localRotation 而不是 rotation 属性，这是因为 rotation 指的是全局旋转角（包括父物体的旋转角），而 localRotation 属性则单指当前物体的旋转角。&lt;/p&gt;
+&lt;p&gt;获取连续时间：&lt;/p&gt;
+&lt;p&gt;DateTime 的 Now 中的 Hours、Minutes 和 Seconds 对象只能返回到秒（也就是整数）的改变，如果我们想要更精确的时间（小数），可以使用 Now 中的 TimeOfDay 变量，它是一个 TimeSpan 对象，可以得到时间的小数，就能让我们钟表移动的更平滑，但要注意 Unity 中所有的对象默认都是 float 运算，但是这里 TimeOfDay 返回的小数确是 double 类型的，所以为了成功运行我们的程序我们需要强制类型转换&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-C#&#34;&gt;hoursPivot.localRotation =
+			Quaternion.Euler(0f, 0f, hoursToDegrees * (float)time.TotalHours);
+		minutesPivot.localRotation =
+			Quaternion.Euler(0f, 0f, minutesToDegrees * (float)time.TotalMinutes);
+		secondsPivot.localRotation =
+			Quaternion.Euler(0f, 0f, secondsToDegrees * (float)time.TotalSeconds);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;​&lt;/p&gt;
+&lt;p&gt;​						   &lt;strong&gt;End Of Session&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id=&#34;2-画数学图像building-a-graph&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#2-画数学图像building-a-graph&#34;&gt;#&lt;/a&gt; 2. 画数学图像（Building a Graph）&lt;/h3&gt;
+&lt;h4 id=&#34;生成实例instance&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#生成实例instance&#34;&gt;#&lt;/a&gt; 生成实例（Instance）&lt;/h4&gt;
+&lt;h5 id=&#34;prefabs&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#prefabs&#34;&gt;#&lt;/a&gt; Prefabs&lt;/h5&gt;
+&lt;p&gt;只需要在 Assets 界面创建游戏物体，我们就算是创建好了一个 prefabs， 我们需要用他来生成实例，要手动创建实例，只需要将该 prefabs 拖拽到视图中或者层次窗口中&lt;/p&gt;
+&lt;h5 id=&#34;使用脚本&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#使用脚本&#34;&gt;#&lt;/a&gt; 使用脚本&lt;/h5&gt;
+&lt;p&gt;使用空物体来创建实例，我们将 Graph 脚本（里面有一个 Transform 属性）绑定到空物体上，再把他的 Transform 属性链接给我们创建好的 Point Prefabs，这样代码中执行&lt;mark&gt; Instantiate&lt;/mark&gt; 命令的时候，就可以实例化我们绑定好的 Point Prefabs，因为每个 GameObject 的属性都会与它本身的引用相绑定，所以实例化属性也就相当于实例化了一个 GameObject，只不过我们现在只使用它的 Transform 属性&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-C#&#34;&gt;public class Graph : MonoBehaviour &amp;#123;
+
+	[SerializeField]
+	Transform pointPrefab;
+	
+	void Awake () &amp;#123;
+		Transform point = Instantiate(pointPrefab);
+        point.localPosition = Vector3.right;
+
+		point = Instantiate(pointPrefab);
+		point.localPosition = Vector3.right * 2f;
+	&amp;#125;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;上面代码中的 Vector3.right 会返回一个 (1, 0, 0) 的向量，因为 unity 使用左手系，x 轴指向右边，y 轴指向上边，z 轴顺着视线方向向屏幕里指去。&lt;/p&gt;
+&lt;h5 id=&#34;范围条&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#范围条&#34;&gt;#&lt;/a&gt; 范围条&lt;/h5&gt;
+&lt;p&gt;在 Unity 中可以使用 Range 标识符来表示生成一个可以拖动的范围条&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-C#&#34;&gt;[SerializeField, Range(10, 100)]
+int resolution = 10;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img data-src=&#34;https://ooo.0x0.ooo/2023/09/13/OnPjft.png&#34; alt=&#34;Graph&#34;&gt;&lt;/p&gt;
+&lt;h5 id=&#34;设置父类&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#设置父类&#34;&gt;#&lt;/a&gt; 设置父类&lt;/h5&gt;
+&lt;p&gt;生成的 Point 实例目前以他们自己为根物体，但是我们希望通过将他们的父类设置为生成他们的 GameObject 来更好的控制整体变换，我们可以使用 SetParent 方法来实现&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-C#&#34;&gt;for (int i = 0; i &amp;lt; resolution; i++) &amp;#123;
+			…
+			point.SetParent(transform, false);
+		&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;因为我们把当前脚本（Graph.cs）绑定给了 Graph 这个 GameObject，所以直接引用 transform 就是引用的当前 GameObject 的 transform，第二个 false 代表我们不需要调整物体的位置（默认情况下 unity 会改变 local 的 Transform 属性以匹配到物体原始 Global 空间位置）&lt;/p&gt;
+&lt;h4 id=&#34;shader&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#shader&#34;&gt;#&lt;/a&gt; Shader&lt;/h4&gt;
+&lt;h5 id=&#34;surface-shader&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#surface-shader&#34;&gt;#&lt;/a&gt; Surface Shader&lt;/h5&gt;
+&lt;p&gt;我们希望让这些点根据自己所在的位置变化颜色，也就是通过改变他们材质的 shader 来实现这点&lt;/p&gt;
+&lt;p&gt;创建 surface shader 可以通过 &lt;em&gt;Assets / Create / Shader / Standard Surface Shader&lt;/em&gt; ，当前我们希望为 point 创建好一个 shader，所以我们叫他 Point Surface。&lt;/p&gt;
+&lt;p&gt;shader 文件的格式：&lt;/p&gt;
+&lt;p&gt;unity 使用 shaderLab 作为语言编写 shader，它是 HLSL 和 CG 语言的结合体，主要是 CG。&lt;/p&gt;
+&lt;p&gt;基本结构如下：&lt;/p&gt;
+&lt;p&gt;&lt;img data-src=&#34;https://ooo.0x0.ooo/2023/09/13/OnP6Bx.png&#34; alt=&#34;Pointshader&#34;&gt;&lt;/p&gt;
+&lt;p&gt;这里 Graph/Point Surface 是 shader 的名称，后面可以在 Material 中指定，整个 Shader 由多个&lt;mark&gt; SubShader&lt;/mark&gt; 组成，每个 SubShader 负责处理某个格式的表面着色的内容，unity 会逐一匹配他们，如果全部匹配失败，可以指定此时回调使用默认的 unity 着色器，比如 diffuse，这里 ==FallBack “Diffuse”== 的作用就是如此。&lt;/p&gt;
+&lt;p&gt;在 SubShader 中，所有的 shader 代码被&lt;mark&gt; CGPROGRAM&lt;/mark&gt; 和&lt;mark&gt; ENDCG&lt;/mark&gt; 包裹，shader 代码可以使用 #pragma 标识来配置相应的编译属性&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;#pragma surface ConfigureSurface Standard fullforwardshadow
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这一句代码表示接下来的命令会配置表面相关属性和渲染参数（通过 surface 指明）&lt;/p&gt;
+&lt;p&gt;（ConfigureSurface）— 指明我们接下来要配置表面属性而不是渲染参数&lt;/p&gt;
+&lt;p&gt;（Standard）— 表示使用标准的表面着色模型，具有常用表面属性，这是 ==（ConfigureSurface）== 的参数&lt;/p&gt;
+&lt;p&gt;（fullforwardshadows）— 表示启用完整的前向渲染阴影，不会在延迟渲染路径中计算，这也是 ==（ConfigureSurface）== 的参数&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;#pragma target 3.0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这一句代码表示我们会使用 3.0 版本的 shaderLab 渲染&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;pre&gt;&lt;code&gt;struct Input 
+&amp;#123;
+	float3 worldPos;	
+&amp;#125;;
+
+float _Smoothness;
+
+void ConfigureSurface(Input input, inout SurfaceOutputStandard surface) 
+&amp;#123; 
+	surface.Albedo.rg = input.worldPos.xy * 0.5 + 0.5;
+	surface.Smoothness = _Smoothness;
+&amp;#125;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;这段代码首先定义了一个 Input 结构体，里面有一个叫做 worldPos 的变量，我们将他传递到 ConfigureSurface 函数中，这个函数是 unity 用来配置表面属性的函数，我们将 Input 结构体当作他的参数，Unity 就会根据某些命名规则传递顶点信息给其中的变量，比如 worldPos 变量包含 pos 这个字段，那么 Unity 就会把顶点位置信息传递给 worldPos 这个变量&lt;/p&gt;
+&lt;p&gt;第二个参数 SurfaceOutputStandard 是 unity 一个内置的结构体，它主要包含表面的基础信息，inout 表示它会在这个函数中使用并且输出到下一个流水线状态&lt;/p&gt;
+&lt;h5 id=&#34;universal-render-pipeline&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#universal-render-pipeline&#34;&gt;#&lt;/a&gt; Universal Render Pipeline&lt;/h5&gt;
+&lt;p&gt;URP 的配置过程参见 [Catlike-URP](&lt;span class=&#34;exturl&#34; data-url=&#34;aHR0cHM6Ly9jYXRsaWtlY29kaW5nLmNvbS91bml0eS90dXRvcmlhbHMvYmFzaWNzL2J1aWxkaW5nLWEtZ3JhcGgv&#34;&gt;Building a Graph (catlikecoding.com)&lt;/span&gt;)&lt;/p&gt;
+&lt;p&gt;因为它的使用过程不涉及到代码编写 (暂时)，所以我们不作笔记&lt;/p&gt;
+&lt;h4 id=&#34;一些工具函数&#34;&gt;&lt;a class=&#34;markdownIt-Anchor&#34; href=&#34;#一些工具函数&#34;&gt;#&lt;/a&gt; 一些工具函数&lt;/h4&gt;
+&lt;p&gt;Mathf 中：&lt;/p&gt;
+&lt;p&gt;Mathf 表示使用 float 精度的 math 库&lt;/p&gt;
+&lt;p&gt;其中由以下有趣的函数&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Mathf.Sin()&lt;/li&gt;
+&lt;li&gt;Mathf.PI&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Time 中：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Time.time — 返回自游戏开始持续的时间&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;独立：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;saturate — 将里面的值变为 0-1 之间&lt;/li&gt;
+&lt;/ul&gt;
 </content>
         <category term="CG" />
         <category term="游戏引擎" />
